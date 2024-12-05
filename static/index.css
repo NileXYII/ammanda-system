@@ -1,0 +1,222 @@
+/* Body Styling */
+body {
+  background: linear-gradient(90deg, #64bdcb, #ceceea, #776BCC);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+}
+
+/* Container Styling */
+.container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  transform: translateX(-50%);
+  animation: rotate 4s ease-out infinite;
+  filter: url("#gooey");
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Rotation Animation */
+@keyframes rotate {
+  0% {
+      transform: rotate(360deg);
+  }
+  50% {
+      transform: rotate(360deg);
+  }
+  100% {
+      transform: rotate(0deg);
+  }
+}
+
+/* Liquid Animation Styling */
+.container .liquid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(45deg, #ebc0f5, #e08e3c);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.container .liquid:nth-child(1) {
+  animation-name: animate1;
+}
+
+.container .liquid:nth-child(2) {
+  animation-name: animate2;
+}
+
+.container .liquid:nth-child(3) {
+  animation-name: animate3;
+}
+
+.container .liquid:nth-child(4) {
+  animation-name: animate4;
+}
+
+/* Liquid Animation Keyframes */
+@keyframes animate1 {
+  0% {
+      top: 0;
+  }
+  50% {
+      top: 100%;
+  }
+  100% {
+      top: 100%;
+  }
+}
+
+@keyframes animate2 {
+  0% {
+      left: 0;
+  }
+  50% {
+      left: 100%;
+  }
+  100% {
+      left: 100%;
+  }
+}
+
+@keyframes animate3 {
+  0% {
+      left: 100%;
+  }
+  50% {
+      left: 0;
+  }
+  100% {
+      left: 0;
+  }
+}
+
+@keyframes animate4 {
+  0% {
+      top: 100%;
+  }
+  50% {
+      top: 0;
+  }
+  100% {
+      top: 0;
+  }
+}
+
+/* SVG Filter */
+svg {
+  width: 0;
+  height: 0;
+}
+
+/* Centering the buttons */
+.trc {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+}
+
+/* Button Styling */
+button {
+  background: #fff;
+  font-size: 16px;
+  padding: 16px 70px;
+  border-radius: 26px;
+  border: 1px solid #D4D3E8;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4C489D;
+  box-shadow: 0px 2px 2px #5C5696;
+  cursor: pointer;
+  transition: 0.2s;
+  width: auto;
+}
+
+button:active,
+button:focus,
+button:hover {
+  outline: none;
+  border-bottom-color: #6A679E;
+  background-color: #64bdcb;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading Styling */
+h1 {
+  display: block;
+  color: white;
+  font-size: 3rem;
+  font-weight: 600;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+  margin-top: -60px;
+  text-align: center;
+  transform: translateY(-50px);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 200px;
+    height: 200px;
+  }
+
+  .container .liquid {
+    width: 60px;
+    height: 60px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 12px 50px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 180px;
+    height: 180px;
+  }
+
+  .container .liquid {
+    width: 50px;
+    height: 50px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 10px 40px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
