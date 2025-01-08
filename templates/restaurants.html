@@ -1,0 +1,110 @@
+{% extends "Homepage.html" %}
+
+{% block content %}
+<!-- Main Container -->
+<div class="w-full max-w-7xl mx-auto px-4 py-6">
+    <!-- Navigation Bar -->
+    <nav class="mb-8 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" 
+           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
+            Home
+        </a>
+        <a href="{{ url_for('cart') }}" 
+           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
+            View Cart
+        </a>
+    </nav>
+
+    <!-- Page Title -->
+    <h1 class="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-800">
+        Food Categories
+    </h1>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <!-- Chinese Food -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <a href="{{ url_for('restaurant_menu', restaurant_name='chinese_food') }}" class="block">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img src="{{ url_for('static', filename='images/chinese_food.jpg') }}" 
+                         alt="Chinese Food" 
+                         class="w-full h-64 object-cover">
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-gray-800">Chinese Food</h2>
+                        <div class="flex items-center">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1 text-gray-600">4.5</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">A great place for Chinese cuisine pwede palitan depende sa taste.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Italian Bistro -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <a href="{{ url_for('restaurant_menu', restaurant_name='italian_bistro') }}" class="block">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img src="{{ url_for('static', filename='images/italian_bistro.jpg') }}" 
+                         alt="Italian Bistro" 
+                         class="w-full h-64 object-cover">
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-gray-800">Italian Bistro</h2>
+                        <div class="flex items-center">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1 text-gray-600">4.7</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">Authentic Italian dishes with a modern twist.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Mexican Fiesta -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <a href="{{ url_for('restaurant_menu', restaurant_name='mexican_fiesta') }}" class="block">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img src="{{ url_for('static', filename='images/mexican_fiesta.jpg') }}" 
+                         alt="Mexican Fiesta" 
+                         class="w-full h-64 object-cover">
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-gray-800">Mexican Fiesta</h2>
+                        <div class="flex items-center">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1 text-gray-600">4.6</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">Enjoy a vibrant Mexican dining experience.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Sushi Heaven -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <a href="{{ url_for('restaurant_menu', restaurant_name='sushi_heaven') }}" class="block">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img src="{{ url_for('static', filename='images/sushi_heaven.jpg') }}" 
+                         alt="Sushi Heaven" 
+                         class="w-full h-64 object-cover">
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold text-gray-800">Sushi Heaven</h2>
+                        <div class="flex items-center">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1 text-gray-600">4.8</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">Fresh and delicious sushi made to order.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
