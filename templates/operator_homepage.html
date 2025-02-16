@@ -1,10 +1,41 @@
-{% extends "homepage.html"%}
+{% extends "homepage.html" %}
 
 {% block content %}
-    
+
+<style>
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px; /* Adds space between buttons */
+        margin-top: 20px; /* Adds spacing from other elements */
+    }
+
+    .button-container button {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .button-container button a {
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
 <div class="button-container">
     <button><a href="{{ url_for('restaurants') }}">Categories</a></button>
-    <button><a href="{{ url_for('orders') }}">Orders</button>
-    <button><a href="{{ url_for('recommendations') }}">Recommendations</button>
+    <button><a href="{{ url_for('orders') }}">Orders</a></button>
+    <button><a href="{{ url_for('recommendations') }}">Recommendations</a></button>
 </div>
+
 {% endblock %}
+
