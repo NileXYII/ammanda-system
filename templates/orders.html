@@ -34,7 +34,7 @@
                     <td>{{ order.user_name }}</td>
                     <td>{{ order.dishes }}</td>
                     <td>{{ order.restaurants }}</td>
-                    <td>${{ order.total_price }}</td>
+                    <td>₱{{ order.total_price }}</td>
                     <td>{{ order.special_requests }}</td>
                     <td>{{ order.status }}</td>
                     {% if session['role'] in ['ADMIN', 'OPERATOR'] %}
