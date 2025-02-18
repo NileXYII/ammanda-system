@@ -1,4 +1,41 @@
 {% extends "harshama.html" %}
+{% block head %}
+<!-- Add this in your base template's head or here if not in base -->
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .gradient-text {
+        background: linear-gradient(to right, #4f46e5, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(20px, -50px) scale(1.1); }
+        50% { transform: translate(0, 20px) scale(1); }
+        75% { transform: translate(-20px, -15px) scale(0.9); }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="min-h-screen bg-[#0f172a] text-white flex items-center justify-center px-4">
     <!-- Background Effects -->
@@ -58,37 +95,4 @@
         </div>
     </div>
 </div>
-
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .gradient-text {
-        background: linear-gradient(to right, #4f46e5, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    @keyframes blob {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        25% { transform: translate(20px, -50px) scale(1.1); }
-        50% { transform: translate(0, 20px) scale(1); }
-        75% { transform: translate(-20px, -15px) scale(0.9); }
-    }
-
-    .animate-blob {
-        animation: blob 7s infinite;
-    }
-
-    .animation-delay-2000 {
-        animation-delay: 2s;
-    }
-
-    .animation-delay-4000 {
-        animation-delay: 4s;
-    }
-</style>
 {% endblock %}
