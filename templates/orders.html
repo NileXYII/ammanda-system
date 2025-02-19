@@ -3,56 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='orders.css') }}">
-    <title>Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Orders - Vitals Bread & Coffee</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <a href="{{ url_for('home') }}" class="home-button">Home</a>
+<body class="min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-b border-white/20 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ url_for('home') }}" class="gradient-text text-xl font-bold">Vitals</a>
+            </div>
         </div>
-        <h1>Orders</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>User Name</th>
-                    <th>Menus</th>
-                    <th>Category</th>
-                    <th>Total Price</th>
-                    <th>Special Requests</th>
-                    <th>Status</th>
-                    {% if session['role'] in ['ADMIN', 'OPERATOR'] %}
-                    <th>Action</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td>{{ order.order_id }}</td>
-                    <td>{{ order.user_name }}</td>
-                    <td>{{ order.dishes }}</td>
-                    <td>{{ order.restaurants }}</td>
-                    <td>₱{{ order.total_price }}</td>
-                    <td>{{ order.special_requests }}</td>
-                    <td>{{ order.status }}</td>
-                    {% if session['role'] in ['ADMIN', 'OPERATOR'] %}
-                    <td>
-                        {% if order.status == 'Pending' %}
-                        <form method="POST" action="{{ url_for('mark_complete', order_id=order.order_id) }}" style="display:inline;">
-                            <button type="submit">Mark as Complete</button>
-                        </form>
-                        {% endif %}
-                        <form method="POST" action="{{ url_for('delete_order', order_id=order.order_id) }}" style="display:inline;">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 pt-24 pb-16">
+        <h1 class="text-4xl font-bold mb-8 gradient-text">Orders</h1>
+        
+        <!-- Table Container -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-black/20">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Order ID</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">User Name</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Menus</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Category</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Total Price</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Special Requests</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                            {% if session['role'] in ['ADMIN', 'OPERATOR'] %}
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10">
+                        {% for order in orders %}
+                        <tr class="hover:bg-white/5">
+                            <td class="px-6 py-4 text-sm">{{ order.order_id }}</td>
+                            <td class="px-6 py-4 text-sm">{{ order.user_name }}</td>
+                            <td class="px-6 py-4 text-sm">{{ order.dishes }}</td>
+                            <td class="px-6 py-4 text-sm">{{ order.restaurants }}</td>
+                            <td class="px-6 py-4 text-sm">₱{{ order.total_price }}</td>
+                            <td class="px-6 py-4 text-sm">{{ order.special_requests }}</td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium
+                                    {% if order.status == 'Pending' %}
+                                        bg-yellow-500/20 text-yellow-300
+                                    {% elif order.status == 'Complete' %}
+                                        bg-green-500/20 text-green-300
+                                    {% endif %}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            {% if session['role'] in ['ADMIN', 'OPERATOR'] %}
+                            <td class="px-6 py-4 text-sm space-x-2">
+                                {% if order.status == 'Pending' %}
+                                <form method="POST" action="{{ url_for('mark_complete', order_id=order.order_id) }}" class="inline">
+                                    <button type="submit" 
+                                            class="px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-colors duration-200">
+                                        Complete
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <form method="POST" action="{{ url_for('delete_order', order_id=order.order_id) }}" class="inline">
+                                    <button type="submit" 
+                                            class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition-colors duration-200">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </body>
 </html>

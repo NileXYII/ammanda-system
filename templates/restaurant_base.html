@@ -3,25 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='restaurants.css') }}">
-    <title>{{ restaurant_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Menu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bg-blur {
+            backdrop-filter: blur(10px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            @apply px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300;
+        }
+
+        .nav-link-primary {
+            @apply px-4 py-2 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300;
+        }
+    </style>
 </head>
-<body>
-    <div class="header">
-        <div class="left-header">
-            <a href="{{ url_for('home') }}" class="home-page">Home</a>
-        </div>
-        <div class="right-header">
-            <a href="{{ url_for('cart') }}" class="view-cart">View Cart</a>
-            <a href="{{ url_for('restaurants') }}" class="back-to-restaurants">Back to Categories</a>
-            <a href="{{ url_for('orders') }}" class="view-orders">Orders</a>
-        </div>
+<body class="min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
     </div>
-    <h1 class="restaurants_title">{{ restaurant_name.replace("_", " ").title() }}</h1>
-    <section class="layout">
-        {% block content %}
-        <!-- תוכן המסעדה יתווסף כאן -->
-        {% endblock %}
-    </section>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-b border-white/20 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    
+                    <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    
+                    <a href="{{ url_for('restaurants') }}" class="nav-link">
+                        Categories
+                    </a>
+                    <a href="{{ url_for('orders') }}" class="nav-link-primary">
+                        Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16 px-4">
+        <div class="max-w-7xl mx-auto">
+           
+            
+            <!-- Content Section -->
+            <section class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+                {% block content %}
+                {% endblock %}
+            </section>
+        </div>
+    </main>
 </body>
 </html>

@@ -1,35 +1,114 @@
 {% extends "restaurant_base.html" %}
 
 {% block content %}
-<h1>{{ restaurant_name.replace("_", " ").title() }} Menu</h1>
-<div class="layout">
-    {% for dish in dishes %}
-    <div class="grow1">
-        <div class="content">
-            <h2 class="dish-name">{{ dish['name'] }}</h2>
-            <img src="{{ url_for('static', filename=dish['image_url']) }}" alt="{{ dish['name'] }}" class="dish-image">
-            <p class="dish-description">{{ dish['description'] }}</p>
-            <p class="dish-price">Price: PHP{{ dish['price'] }}</p>
-            <form method="POST" action="{{ url_for('add_to_cart') }}" class="action-form">
-                <input type="hidden" name="dish_name" value="{{ dish['name'] }}">
-                <input type="hidden" name="restaurant_name" value="{{ restaurant_name }}">
-                <input type="hidden" name="dish_price" value="{{ dish['price'] }}">
-                <button type="submit" class="add-to-cart-button">Add to Cart</button>
-            </form>
-            {% if session['role'] == 'ADMIN' %}
-            <div class="admin-buttons">
-                <a href="{{ url_for('edit_dish', dish_id=dish['id']) }}" class="edit-dish-button">Edit</a>
-                <form method="POST" action="{{ url_for('delete_dish', dish_id=dish['id']) }}" style="display:inline;">
-                    <button type="submit" class="delete-dish-button">Delete</button>
-                </form>
-            </div>
-            {% endif %}
-        </div>
+<script src="https://cdn.tailwindcss.com"></script>
+<div class="relative min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
-    {% endfor %}
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text tracking-tight text-center">
+Specialty Selection            </h1>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+                {% for dish in dishes %}
+                <div class="bg-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="relative">
+                        <img src="{{ url_for('static', filename=dish['image_url']) }}" 
+                             alt="{{ dish['name'] }}" 
+                             class="w-full h-48 object-cover rounded-xl mb-4">
+                        <div class="absolute top-2 right-2 bg-indigo-500 text-white px-4 py-1 rounded-full">
+                            PHP{{ dish['price'] }}
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-2">{{ dish['name'] }}</h3>
+                    <p class="text-gray-400 mb-4">{{ dish['description'] }}</p>
+                    
+                    <div class="space-y-3">
+                        <form method="POST" action="{{ url_for('add_to_cart') }}">
+                            <input type="hidden" name="dish_name" value="{{ dish['name'] }}">
+                            <input type="hidden" name="restaurant_name" value="{{ restaurant_name }}">
+                            <input type="hidden" name="dish_price" value="{{ dish['price'] }}">
+                            <button type="submit" 
+                                    class="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">
+                                Add to Cart
+                            </button>
+                        </form>
+
+                        {% if session['role'] == 'ADMIN' %}
+                        <div class="flex justify-between gap-4">
+                            <a href="{{ url_for('edit_dish', dish_id=dish['id']) }}" 
+                               class="flex-1 px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-full text-center transition-all duration-300">
+                                Edit
+                            </a>
+                            <form method="POST" action="{{ url_for('delete_dish', dish_id=dish['id']) }}" class="flex-1">
+                                <button type="submit" 
+                                        class="w-full px-4 py-2 bg-pink-500 hover:bg-pink-600 rounded-full transition-all duration-300">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12">
+                {% if session['role'] == 'ADMIN' %}
+                <a href="{{ url_for('add_dish', restaurant_name=restaurant_name) }}" 
+                   class="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">
+                    Add New Menu
+                </a>
+                {% endif %}
+                <a href="{{ url_for('restaurants') }}" 
+                   class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300">
+                    Back to Categories
+                </a>
+            </div>
+        </div>
+    </main>
 </div>
-{% if session['role'] == 'ADMIN' %}
-<a href="{{ url_for('add_dish', restaurant_name=restaurant_name) }}" class="add-dish-button">Add New Menu</a>
-{% endif %}
-<a href="{{ url_for('restaurants') }}" class="back-to-restaurants">Back to Categories</a>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .gradient-text {
+        background: linear-gradient(to right, #4f46e5, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+</style>
 {% endblock %}

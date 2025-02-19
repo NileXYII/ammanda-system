@@ -3,54 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='manage.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Users List</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -50px) scale(1.1); }
+            50% { transform: translate(0, 20px) scale(1); }
+            75% { transform: translate(-20px, -15px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+
+        /* Custom scrollbar for the table */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
-<body>
-    <div class="header">
-        <a href="{{ url_for('home') }}" class="home-button">Home</a>
+<body class="min-h-screen bg-[#0f172a] text-white">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
-    <div class="container">
-        <h1>Registered Users</h1>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>City</th>
-                    <th>Address</th>
-                    <th>Birth Date</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user[0] }}</td>
-                    <td>{{ user[1] }}</td>
-                    <td>{{ user[2] }}</td>
-                    <td>{{ user[3] }}</td>
-                    <td>{{ user[4] }}</td>
-                    <td>{{ user[5] }}</td>
-                    <td>{{ user[6] }}</td>
-                    <td>{{ user[7] }}</td>
-                    <td>
-                        {% if user[7] != 'OPERATOR' %}
-                        <form method="POST" action="{{ url_for('upgrade_user', user_id=user[0]) }}" style="display:inline;">
-                            <button type="submit">Upgrade to Operator</button>
-                        </form>
-                        {% endif %}
-                        <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}" style="display:inline;">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-b border-white/20 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ url_for('home') }}" 
+                   class="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300">
+                    Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 pt-24 pb-16">
+        <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-xl">
+            <h1 class="text-3xl font-bold mb-8 gradient-text text-center">Registered Users</h1>
+            
+            <div class="table-container overflow-x-auto">
+                <table class="w-full min-w-max">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="p-4 text-left font-semibold">ID</th>
+                            <th class="p-4 text-left font-semibold">Email</th>
+                            <th class="p-4 text-left font-semibold">Name</th>
+                            <th class="p-4 text-left font-semibold">Surname</th>
+                            <th class="p-4 text-left font-semibold">City</th>
+                            <th class="p-4 text-left font-semibold">Address</th>
+                            <th class="p-4 text-left font-semibold">Birth Date</th>
+                            <th class="p-4 text-left font-semibold">Role</th>
+                            <th class="p-4 text-left font-semibold">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                            <td class="p-4">{{ user[0] }}</td>
+                            <td class="p-4">{{ user[1] }}</td>
+                            <td class="p-4">{{ user[2] }}</td>
+                            <td class="p-4">{{ user[3] }}</td>
+                            <td class="p-4">{{ user[4] }}</td>
+                            <td class="p-4">{{ user[5] }}</td>
+                            <td class="p-4">{{ user[6] }}</td>
+                            <td class="p-4">{{ user[7] }}</td>
+                            <td class="p-4">
+                                <div class="flex gap-2">
+                                    {% if user[7] != 'OPERATOR' %}
+                                    <form method="POST" action="{{ url_for('upgrade_user', user_id=user[0]) }}">
+                                        <button type="submit" 
+                                                class="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 text-sm">
+                                            Upgrade
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}">
+                                        <button type="submit" 
+                                                class="px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-600/80 transition-all duration-300 text-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </body>
 </html>

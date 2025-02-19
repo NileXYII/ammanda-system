@@ -1,110 +1,169 @@
-{% extends "homepage.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Categories - Vitals</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-{% block content %}
-<!-- Main Container -->
-<div class="w-full max-w-7xl mx-auto px-4 py-6">
-    <!-- Navigation Bar -->
-    <nav class="mb-8 flex justify-between items-center">
-        <a href="{{ url_for('home') }}" 
-           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
-            Home
-        </a>
-        <a href="{{ url_for('cart') }}" 
-           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
-            View Cart
-        </a>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bg-blur {
+            backdrop-filter: blur(10px);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/10 backdrop-blur-lg border-b border-white/20 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="gradient-text text-xl font-bold">Vitals</div>
+                <div class="flex space-x-4">
+                    <a href="{{ url_for('home') }}" class="text-white/70 hover:text-white transition-colors">
+                        Home
+                    </a>
+                    <a href="{{ url_for('orders') }}" 
+                       class="px-6 py-2 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300">
+                        Orders
+                    </a>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <!-- Page Title -->
-    <h1 class="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-800">
-        Food Categories
-    </h1>
+    <!-- Main Content -->
+    <main class="pt-32 pb-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text tracking-tight">
+                    Explore Our Menu
+                </h1>
+                <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+                    Experience the perfect blend of artisanal bread and premium coffee in a modern atmosphere.
+                </p>
+            </div>
 
-    <!-- Categories Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        <!-- Chinese Food -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <a href="{{ url_for('restaurant_menu', restaurant_name='chinese_food') }}" class="block">
-                <div class="aspect-w-16 aspect-h-9">
-                    <img src="{{ url_for('static', filename='images/Coffeess.jpeg') }}" 
-                         alt="Chinese Food" 
-                         class="w-full h-64 object-cover">
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-2xl font-bold text-gray-800">Drink Items</h2>
-                        <div class="flex items-center">
-                            <span class="text-yellow-500">★</span>
-                            <span class="ml-1 text-gray-600">4.5</span>
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Drinks -->
+                <a href="{{ url_for('restaurant_menu', restaurant_name='chinese_food') }}" 
+                   class="group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/90 to-purple-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 mb-6 floating">
+                            <img src="{{ url_for('static', filename='images/Coffeess.jpeg') }}" 
+                                 alt="Drinks" 
+                                 class="w-full h-full object-cover rounded-full opacity-80">
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Drink Items</h3>
+                        <p class="text-gray-400 mb-4">Premium coffee and specialty beverages</p>
+                        <div class="flex items-center text-white/80">
+                            <span class="text-yellow-400 mr-1">★</span>
+                            <span>4.5</span>
                         </div>
                     </div>
-                    <p class="text-gray-600">A delightful selection of beverages featuring rich and aromatic coffee-based drinks, from classic brews to indulgent specialty blends.</p>
-                </div>
-            </a>
-        </div>
+                </a>
 
-        <!-- Italian Bistro -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <a href="{{ url_for('restaurant_menu', restaurant_name='italian_bistro') }}" class="block">
-                <div class="aspect-w-16 aspect-h-9">
-                    <img src="{{ url_for('static', filename='images/fooditems.jpeg') }}" 
-                         alt="Italian Bistro" 
-                         class="w-full h-64 object-cover">
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-2xl font-bold text-gray-800">Food Items</h2>
-                        <div class="flex items-center">
-                            <span class="text-yellow-500">★</span>
-                            <span class="ml-1 text-gray-600">4.7</span>
+                <!-- Food -->
+                <a href="{{ url_for('restaurant_menu', restaurant_name='italian_bistro') }}" 
+                   class="group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/90 to-pink-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mb-6 floating">
+                            <img src="{{ url_for('static', filename='images/fooditems.jpeg') }}" 
+                                 alt="Food" 
+                                 class="w-full h-full object-cover rounded-full opacity-80">
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Pasta Items</h3>
+                        <p class="text-gray-400 mb-4">Delicious meals and savory dishes</p>
+                        <div class="flex items-center text-white/80">
+                            <span class="text-yellow-400 mr-1">★</span>
+                            <span>4.7</span>
                         </div>
                     </div>
-                    <p class="text-gray-600">A savory assortment of delicious meals, including mouthwatering pizzas and comforting pasta dishes, crafted to satisfy every craving.</p>
-                </div>
-            </a>
-        </div>
+                </a>
 
-        <!-- Mexican Fiesta -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <a href="{{ url_for('restaurant_menu', restaurant_name='mexican_fiesta') }}" class="block">
-                <div class="aspect-w-16 aspect-h-9">
-                    <img src="{{ url_for('static', filename='images/dessertitems.jpeg') }}" 
-                         alt="Mexican Fiesta" 
-                         class="w-full h-64 object-cover">
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-2xl font-bold text-gray-800">Dessert Items</h2>
-                        <div class="flex items-center">
-                            <span class="text-yellow-500">★</span>
-                            <span class="ml-1 text-gray-600">4.6</span>
+                <!-- Dessert -->
+                <a href="{{ url_for('restaurant_menu', restaurant_name='mexican_fiesta') }}" 
+                   class="group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-500/90 to-indigo-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-indigo-500 mb-6 floating">
+                            <img src="{{ url_for('static', filename='images/dessertitems.jpeg') }}" 
+                                 alt="Desserts" 
+                                 class="w-full h-full object-cover rounded-full opacity-80">
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Dessert Items</h3>
+                        <p class="text-gray-400 mb-4">Sweet treats and pastries</p>
+                        <div class="flex items-center text-white/80">
+                            <span class="text-yellow-400 mr-1">★</span>
+                            <span>4.6</span>
                         </div>
                     </div>
-                    <p class="text-gray-600">A sweet collection of pastries and desserts, offering a perfect balance of flavors and textures to indulge your sweet tooth.</p>
-                </div>
-            </a>
-        </div>
+                </a>
 
-        <!-- Sushi Heaven -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <a href="{{ url_for('restaurant_menu', restaurant_name='sushi_heaven') }}" class="block">
-                <div class="aspect-w-16 aspect-h-9">
-                    <img src="{{ url_for('static', filename='images/specialty.jpeg') }}" 
-                         alt="Sushi Heaven" 
-                         class="w-full h-64 object-cover">
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-2xl font-bold text-gray-800">Specialty Items</h2>
-                        <div class="flex items-center">
-                            <span class="text-yellow-500">★</span>
-                            <span class="ml-1 text-gray-600">4.8</span>
+                <!-- Specialty -->
+                <a href="{{ url_for('restaurant_menu', restaurant_name='sushi_heaven') }}" 
+                   class="group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/90 to-purple-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 mb-6 floating">
+                            <img src="{{ url_for('static', filename='images/specialty.jpeg') }}" 
+                                 alt="Specialty" 
+                                 class="w-full h-full object-cover rounded-full opacity-80">
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-2">Specialty Items</h3>
+                        <p class="text-gray-400 mb-4">Unique creations and premium selections</p>
+                        <div class="flex items-center text-white/80">
+                            <span class="text-yellow-400 mr-1">★</span>
+                            <span>4.8</span>
                         </div>
                     </div>
-                    <p class="text-gray-600">A premium selection of both special coffee creations and unique, handcrafted desserts for an extraordinary taste experience.</p>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
-    </div>
-</div>
-{% endblock %}
+    </main>
+</body>
+</html>
