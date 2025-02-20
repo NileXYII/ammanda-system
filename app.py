@@ -1,12 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename
 import sqlite3
 import smtplib
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from flask import send_from_directory
 
-app = Flask(__name__)
+
+app = Flask(__name__, instance_relative_config=True)
 app.secret_key = 'your_secret_key'
-DATABASE = 'users.db'
+
+# Ensure the instance folder exists
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
+
+# Database path is now in the instance folder
+DATABASE = os.path.join(app.instance_path, 'users.db')
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
@@ -69,6 +81,8 @@ def create_dishes_table():
             restaurant_name TEXT NOT NULL
         )
     ''')
+    conn.commit()
+    conn.close()
 
 def create_recommendations_table():
     conn = get_db_connection()
@@ -82,7 +96,6 @@ def create_recommendations_table():
             comment TEXT NOT NULL
         )
     ''')
-    
     conn.commit()
     conn.close()
 
@@ -111,9 +124,12 @@ def insert_sample_data():
         conn.commit()
     conn.close()
 
-init_db()
-create_dishes_table()
-create_recommendations_table()
+# Initialize tables
+with app.app_context():
+    init_db()
+    create_dishes_table() 
+    create_recommendations_table()
+    insert_sample_data()
 
 def send_email(to_email, subject, body):
     from_email = "your_email@example.com"
@@ -145,13 +161,14 @@ def get_dish_by_id(dish_id):
         return dict(dish)
     return None
 
-def update_dish(dish_id, form_data):
+def update_dish(dish_id, data):
     conn = get_db_connection()
-    conn.execute('''
+    cursor = conn.cursor()
+    cursor.execute('''
         UPDATE dishes
         SET name = ?, description = ?, price = ?, image_url = ?
         WHERE id = ?
-    ''', (form_data['name'], form_data['description'], form_data['price'], form_data['image_url'], dish_id))
+    ''', (data['name'], data['description'], data['price'], data['image_url'], dish_id))
     conn.commit()
     conn.close()
 
@@ -192,7 +209,7 @@ def register():
     address = request.form['address']
     birth_date = request.form['birth_date']
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
@@ -211,16 +228,16 @@ def login():
     email = request.form['email']
     password = request.form['password']
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password))
     user = cursor.fetchone()
     conn.close()
 
     if user:
-        session['user_id'] = user[0]
-        session['user_name'] = f"{user[3]} {user[4]}"
-        session['role'] = user[8]
+        session['user_id'] = user['id']
+        session['user_name'] = f"{user['name']} {user['surname']}"
+        session['role'] = user['role']
         if session['role'] == 'ADMIN':
             return redirect(url_for('admin_homepage'))
         elif session['role'] == 'OPERATOR':
@@ -242,7 +259,7 @@ def upgrade_user(user_id):
     if 'user_id' not in session or session['role'] != 'ADMIN':
         return "Access denied!"
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("UPDATE users SET role = 'OPERATOR' WHERE id = ?", (user_id,))
     conn.commit()
@@ -254,10 +271,9 @@ def users():
     if 'user_id' not in session or session['role'] != 'ADMIN':
         return "Access denied!"
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT id, email, name, surname, city, address, birth_date, role FROM users')
-    users = cursor.fetchall()
+    users = conn.execute('SELECT id, email, name, surname, city, address, birth_date, role FROM users').fetchall()
     conn.close()
 
     return render_template('users.html', users=users)
@@ -273,7 +289,7 @@ def add_admin():
     birth_date = '2000-01-01'
     role = 'ADMIN'
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
@@ -292,7 +308,7 @@ def delete_user(user_id):
     if 'user_id' not in session or session['role'] != 'ADMIN':
         return "Access denied!"
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
     conn.commit()
@@ -356,7 +372,7 @@ def add_to_cart():
     restaurant_name = request.form['restaurant_name']
     dish_price = float(request.form['dish_price'])
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('INSERT INTO cart (user_id, dish_name, restaurant_name, dish_price) VALUES (?, ?, ?, ?)', (user_id, dish_name, restaurant_name, dish_price))
     conn.commit()
@@ -371,13 +387,12 @@ def cart():
 
     user_id = session['user_id']
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT id, dish_name, restaurant_name, dish_price FROM cart WHERE user_id = ?', (user_id,))
-    cart_items = cursor.fetchall()
+    cart_items = conn.execute('SELECT id, dish_name, restaurant_name, dish_price FROM cart WHERE user_id = ?', (user_id,)).fetchall()
     conn.close()
 
-    total = sum(item[3] for item in cart_items)
+    total = sum(item['dish_price'] for item in cart_items)
 
     return render_template('cart.html', cart=cart_items, total=total)
 
@@ -388,7 +403,7 @@ def delete_from_cart(item_id):
 
     user_id = session['user_id']
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM cart WHERE id = ? AND user_id = ?', (item_id, user_id))
     conn.commit()
@@ -405,7 +420,7 @@ def place_order():
     user_name = session['user_name']
     special_requests = request.form.get('special_requests', '')
 
-    conn = sqlite3.connect('users.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute('SELECT MAX(order_id) FROM orders')
@@ -419,7 +434,7 @@ def place_order():
         cursor.execute('''
             INSERT INTO orders (user_id, user_name, dish_name, restaurant_name, dish_price, special_requests, status, order_id)
             VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)
-        ''', (user_id, user_name, item[0], item[1], item[2], special_requests, next_order_id))
+        ''', (user_id, user_name, item['dish_name'], item['restaurant_name'], item['dish_price'], special_requests, next_order_id))
 
     cursor.execute('DELETE FROM cart WHERE user_id = ?', (user_id,))
     conn.commit()
@@ -503,7 +518,7 @@ def add_dish(restaurant_name):
     return render_template('add_dish.html', restaurant_name=restaurant_name)
 
 @app.route('/delete_dish/<int:dish_id>', methods=['POST'])
-def delete_dish(dish_id):
+def delete_dish_route(dish_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -515,7 +530,7 @@ def delete_dish(dish_id):
         return redirect(url_for('restaurant_menu', restaurant_name=dish['restaurant_name'].replace(" ", "_").lower()))
     except Exception as e:
         print(f"An error occurred: {e}")
-        return redirect(url_for('restaurant_menu', restaurant_name=dish['restaurant_name'].replace(" ", "_").lower()))
+        return redirect(url_for('restaurants'))
     finally:
         conn.close()
 
@@ -535,7 +550,7 @@ def recommendations():
     recommendations = conn.execute('SELECT * FROM recommendations').fetchall()
     conn.close()
     
-    user_role = session.get('user_role', 'guest')  
+    user_role = session.get('role', 'guest')  
     return render_template('recommendations.html', recommendations=recommendations, user_role=user_role)
 
 @app.route('/delete_recommendation/<int:id>', methods=['POST'])
@@ -547,4 +562,10 @@ def delete_recommendation(id):
     return redirect(url_for('recommendations'))
 
 if __name__ == '__main__':
+    with app.app_context():
+        # Check if tables exist, if not initialize
+        init_db()
+        create_dishes_table()
+        create_recommendations_table()
+        insert_sample_data()
     app.run(debug=True)
