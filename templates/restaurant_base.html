@@ -29,15 +29,34 @@
         .nav-link-primary {
             @apply px-4 py-2 rounded-full bg-indigo-500 hover:bg-indigo-600 transition-all duration-300;
         }
+
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+        
+        .animate-blob {
+            animation: blob 10s infinite;
+        }
+        
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
     <!-- Background Effects -->
     <div class="fixed inset-0 -z-10">
         <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
-        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
-        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
-        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
 
     <!-- Navigation -->
@@ -45,33 +64,18 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    
                     <a href="{{ url_for('home') }}" class="nav-link">Home</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    
-                    <a href="{{ url_for('restaurants') }}" class="nav-link">
-                        Categories
-                    </a>
-                    <a href="{{ url_for('orders') }}" class="nav-link-primary">
-                        Orders
-                    </a>
+                    <a href="{{ url_for('restaurants') }}" class="nav-link">Categories</a>
+                    <a href="{{ url_for('cart') }}" class="nav-link">Cart</a>
+                    <a href="{{ url_for('orders') }}" class="nav-link-primary">Orders</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-24 pb-16 px-4">
-        <div class="max-w-7xl mx-auto">
-           
-            
-            <!-- Content Section -->
-            <section class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-                {% block content %}
-                {% endblock %}
-            </section>
-        </div>
-    </main>
+    {% block content %}{% endblock %}
 </body>
 </html>
