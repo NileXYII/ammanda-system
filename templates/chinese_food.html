@@ -1,56 +1,61 @@
 {% extends "restaurant_base.html" %}
 
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
-
-<div class="relative min-h-screen bg-[#0f172a] text-white overflow-x-hidden">
-    <!-- Background Effects -->
-    <div class="fixed inset-0 -z-10">
-        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20"></div>
-        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-    </div>
-
-    <!-- Main Content -->
-    <main class="pt-32 pb-16 px-4">
-        <div class="max-w-7xl mx-auto">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text tracking-tight text-center">
-               Drinks Selection
-            </h1>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-5xl mx-auto">
-                {% for dish in dishes %}
-                <div class="bg-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 transform hover:-translate-y-2 transition-all duration-300">
-                    <img src="{{ url_for('static', filename=dish['image_url']) }}" alt="{{ dish['name'] }}" class="w-16 h-16 rounded-full mx-auto mb-6 floating">
-                    <h3 class="text-xl font-semibold mb-2">{{ dish['name'] }}</h3>
-                    <p class="text-gray-400">{{ dish['description'] }}</p>
-                    <p class="text-gray-400 mt-2">Price: PHP{{ dish['price'] }}</p>
-                    <form method="POST" action="{{ url_for('add_to_cart') }}" class="mt-4">
-                        <input type="hidden" name="dish_name" value="{{ dish['name'] }}">
-                        <input type="hidden" name="restaurant_name" value="{{ restaurant_name }}">
-                        <input type="hidden" name="dish_price" value="{{ dish['price'] }}">
-                        <button type="submit" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">Add to Cart</button>
+<main class="pt-32 pb-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text tracking-tight text-center">{{ restaurant_name }}</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+            {% for dish in dishes %}
+            <div class="bg-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 transform hover:-translate-y-2 transition-all duration-300">
+                <img src="{{ dish.image_url if 'http' in dish.image_url else url_for('static', filename=dish.image_url) }}" 
+                alt="{{ dish.name }}" 
+                class="w-full h-48 object-cover rounded-xl mb-6">
+                           <h3 class="text-xl font-semibold mb-2">{{ dish.name }}</h3>
+                <p class="text-gray-400 mb-4">{{ dish.description }}</p>
+                <p class="text-lg font-semibold mb-4">₱{{ "%.2f"|format(dish.price) }}</p>
+                
+                <form method="POST" action="{{ url_for('add_to_cart') }}" class="mt-4">
+                    <input type="hidden" name="dish_name" value="{{ dish.name }}">
+                    <input type="hidden" name="restaurant_name" value="{{ restaurant_name }}">
+                    <input type="hidden" name="dish_price" value="{{ dish.price }}">
+                    <button type="submit" class="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">
+                        Add to Cart
+                    </button>
+                </form>
+                
+                {% if session.get('role') == 'ADMIN' %}
+                <div class="flex justify-between mt-4">
+                    <a href="{{ url_for('edit_dish', dish_id=dish.id) }}" 
+                       class="text-indigo-400 hover:text-indigo-300 transition-colors duration-150">
+                        Edit
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_dish_route', dish_id=dish.id) }}" class="inline">
+                        <button type="submit" class="text-red-400 hover:text-red-300 transition-colors duration-150">
+                            Delete
+                        </button>
                     </form>
-                    {% if session['role'] == 'ADMIN' %}
-                    <div class="mt-4">
-                        <a href="{{ url_for('edit_dish', dish_id=dish['id']) }}" class="text-indigo-500 hover:text-indigo-600">Edit</a>
-                        <form method="POST" action="{{ url_for('delete_dish', dish_id=dish['id']) }}" class="inline">
-                            <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
-                        </form>
-                    </div>
-                    {% endif %}
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
-            {% if session['role'] == 'ADMIN' %}
-            <div class="text-center mt-8">
-                <a href="{{ url_for('add_dish', restaurant_name=restaurant_name) }}" class="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">Add New Menu</a>
-            </div>
-            {% endif %}
-            <div class="text-center mt-8">
-                <a href="{{ url_for('restaurants') }}" class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300">Back to Categories</a>
-            </div>
+            {% endfor %}
         </div>
-    </main>
-</div>
+
+        {% if session.get('role') == 'ADMIN' %}
+        <div class="text-center mt-8">
+            <a href="{{ url_for('add_dish', restaurant_name=restaurant_name) }}" 
+               class="inline-block px-6 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-full transition-all duration-300">
+                Add New Dish
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-8">
+            <a href="{{ url_for('restaurants') }}" 
+               class="inline-block px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300">
+                Back to Categories
+            </a>
+        </div>
+    </div>
+</main>
 {% endblock %}
